@@ -1,7 +1,6 @@
 ﻿using GestaoDocumento.Models;
 using MySql.Data.MySqlClient;
 using System.Data;
-using System.Data.SqlClient;
 
 namespace GestaoDocumento.Data
 {
@@ -9,7 +8,7 @@ namespace GestaoDocumento.Data
     {
         static string connString = DbContext.ConnectionString;
 
-        public void Add(Documento documento)
+        public void Create(Documento documento)
         {
             string sql = "INSERT INTO documento VALUES (@Codigo, @Titulo, @Revisao, @DataPlanejada, @Valor)";
 
@@ -18,7 +17,7 @@ namespace GestaoDocumento.Data
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Codigo", documento.Codigo);
                 cmd.Parameters.AddWithValue("@Titulo", documento.Titulo);
-                cmd.Parameters.AddWithValue("@Revisao", documento.Revisao);
+                cmd.Parameters.AddWithValue("@Revisao", documento.Revisao.ToString().Replace("_", ""));
                 cmd.Parameters.AddWithValue("@DataPlanejada", documento.DataPlanejada);
                 cmd.Parameters.AddWithValue("@Valor", documento.Valor);
 
@@ -41,7 +40,7 @@ namespace GestaoDocumento.Data
             }
         }
 
-        public List<Documento> Get()
+        public List<Documento> Read()
         {
             string sql = "SELECT * FROM documento ORDER BY Id DESC";
             List<Documento> documentos = new List<Documento>();
@@ -61,7 +60,8 @@ namespace GestaoDocumento.Data
                         documento.Id = (int)reader["Id"];
                         documento.Codigo = reader["Codigo"].ToString();
                         documento.Titulo = reader["Titulo"].ToString();
-                        documento.Revisao = reader["Revisao"].ToString()[0];
+                        Enum.TryParse(reader["Revisao"].ToString(), out Documento.RevisaoEnum revisao);
+                        documento.Revisao = revisao;
                         documento.DataPlanejada = (DateTime)reader["DataPlanejada"];
                         documento.Valor = (Decimal)reader["Valor"];
                         documentos.Add(documento);
@@ -72,10 +72,9 @@ namespace GestaoDocumento.Data
             }
         }
 
-        public Documento Get(int id)
+        public Documento Read(int id)
         {
             string sql = "SELECT * FROM documento WHERE Id=@Id";
-            Documento documento = null;
 
             using (var conn = new MySqlConnection(connString))
             {
@@ -88,30 +87,43 @@ namespace GestaoDocumento.Data
                 {
                     if (reader.HasRows && reader.Read())
                     {
+                        Documento documento = new Documento();
+
                         documento.Id = (int)reader["Id"];
                         documento.Codigo = reader["Codigo"].ToString();
                         documento.Titulo = reader["Titulo"].ToString();
-                        documento.Revisao = reader["Revisao"].ToString()[0];
+                        Enum.TryParse(reader["Revisao"].ToString(), out Documento.RevisaoEnum revisao);
+                        documento.Revisao = revisao;
                         documento.DataPlanejada = (DateTime)reader["DataPlanejada"];
                         documento.Valor = (Decimal)reader["Valor"];
+
+                        return documento;
                     }
                 }
-
-                return documento;
             }
+
+            return null;
         }
 
         public void Update(Documento documento)
         {
-            string sql = "UPDATE documento SET Codigo=@Codigo, Titulo=@Titulo, Revisao=@Revisao, DataPlanejada=@DataPlanejada, Valor=@Valor)";
+            string sql = @"
+                UPDATE documento SET
+                    Codigo=@Codigo,
+                    Titulo=@Titulo,
+                    Revisao=@Revisao,
+                    DataPlanejada=@DataPlanejada,
+                    Valor=@Valor
+                WHERE Id=@Id";
 
             using (var conn = new MySqlConnection(connString))
             {
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
 
+                cmd.Parameters.AddWithValue("@Id", documento.Id);
                 cmd.Parameters.AddWithValue("@Codigo", documento.Codigo);
                 cmd.Parameters.AddWithValue("@Titulo", documento.Titulo);
-                cmd.Parameters.AddWithValue("@Revisao", documento.Revisao);
+                cmd.Parameters.AddWithValue("@Revisao", documento.Revisao.ToString().Replace("_", ""));
                 cmd.Parameters.AddWithValue("@DataPlanejada", documento.DataPlanejada);
                 cmd.Parameters.AddWithValue("@Valor", documento.Valor);
 

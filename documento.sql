@@ -1,5 +1,5 @@
 CREATE TABLE `documento` (
-  `Id` int unsigned NOT NULL AUTO_INCREMENT,
+  `Id` int NOT NULL AUTO_INCREMENT,
   `Codigo` varchar(45) NOT NULL,
   `Titulo` varchar(45) NOT NULL,
   `Revisao` char(1) NOT NULL,

@@ -11,7 +11,7 @@ namespace GestaoDocumento.Controllers
         // GET: Documentos
         public ActionResult Index()
         {
-            return View(repository.Get());
+            return View(repository.Read());
         }
 
         // GET: Documentos/Create
@@ -26,7 +26,7 @@ namespace GestaoDocumento.Controllers
         {
             if (ModelState.IsValid)
             {
-                repository.Add(documento);
+                repository.Create(documento);
                 return RedirectToAction("Index");
             }
 
@@ -36,7 +36,7 @@ namespace GestaoDocumento.Controllers
         // GET: Documentos/Edit/5
         public ActionResult Edit(int id)
         {
-            Documento documento = repository.Get(id);
+            Documento documento = repository.Read(id);
 
             if (documento == null)
             {
