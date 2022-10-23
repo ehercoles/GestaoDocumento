@@ -5,7 +5,9 @@
 }
 
 <p>
-    <a asp-action="Create">Adicionar Documento</a>
+    <a asp-action="Create" class="btn btn-default">
+        <span class="material-icons md-20" style="vertical-align: bottom;">add_circle</span> Adicionar
+    </a>
 </p>
 <table class="table">
     <thead>
@@ -47,10 +49,38 @@
                 @Html.DisplayFor(modelItem => item.Valor)
             </td>
             <td>
-                @Html.ActionLink("Editar", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Excluir", "Delete", new { /* id=item.PrimaryKey */ })
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-default" title="Alterar">
+                    <span class="material-icons md-20">edit_square</span>
+                </a>
+                <a id="@item.Id" class="btn btn-default btnDelete" style="cursor:pointer;" title="Excluir">
+                    <span class="material-icons md-20">delete</span>
+                </a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".btnDelete").click(function () {
+                if (confirm("Tem certeza que deseja excluir?")) {
+                    var id = $(this).attr('id');
+                    var parentTr = $(this).closest('tr');
+
+                    $.ajax({
+                        method: "POST",
+                        url: "/Documentos/Delete/" + id,
+                        success: function (data) {
+                            parentTr.remove();
+                        },
+                        error: function (data) {
+                            alert("Erro ao excluir");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

@@ -60,13 +60,9 @@ namespace GestaoDocumento.Controllers
         }
 
         // GET: Documentos/Delete/5
-        public ActionResult Delete(int id)
+        public void Delete(int id)
         {
             repository.Delete(id);
-
-            // TODO: delete
-            //return Json(respository.GetAll());
-            return View();
         }
     }
 }

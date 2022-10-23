@@ -1,10 +1,10 @@
 ﻿@model GestaoDocumento.Models.Documento
 
 @{
-    ViewData["Title"] = "Editar";
+    ViewData["Title"] = "Alterar";
 }
 
-<h1>Editar</h1>
+<h1>Alterar</h1>
 
 <h4>Documento</h4>
 <hr />
@@ -39,17 +39,12 @@
                 <input asp-for="Valor" class="form-control" />
                 <span asp-validation-for="Valor" class="text-danger"></span>
             </div>
-            <br />
             <div class="form-group">
                 <input type="submit" value="Salvar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-default">Cancelar</a>
             </div>
         </form>
     </div>
-</div>
-
-<br />
-<div>
-    <a asp-action="Index">Voltar</a>
 </div>
 
 @section Scripts {

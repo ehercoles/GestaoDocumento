@@ -10,11 +10,12 @@ namespace GestaoDocumento.Data
 
         public void Create(Documento documento)
         {
-            string sql = "INSERT INTO documento VALUES (@Codigo, @Titulo, @Revisao, @DataPlanejada, @Valor)";
+            string sql = "INSERT INTO documento (Codigo, Titulo, Revisao, DataPlanejada, Valor) VALUES (@Codigo, @Titulo, @Revisao, @DataPlanejada, @Valor)";
 
             using (var conn = new MySqlConnection(connString))
             {
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
+
                 cmd.Parameters.AddWithValue("@Codigo", documento.Codigo);
                 cmd.Parameters.AddWithValue("@Titulo", documento.Titulo);
                 cmd.Parameters.AddWithValue("@Revisao", documento.Revisao.ToString().Replace("_", ""));
@@ -28,7 +29,7 @@ namespace GestaoDocumento.Data
 
         public void Delete(int id)
         {
-            string sql = "DELETE documento WHERE Id=@Id";
+            string sql = "DELETE FROM documento WHERE Id=@Id";
 
             using (var conn = new MySqlConnection(connString))
             {
